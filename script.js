@@ -2,7 +2,7 @@
 
 // Solicito el nombre
 function solicitarNombre(){
-    nombreSolicitado = prompt("Ingrese su nombre de jugador");
+    nombreSolicitado = prompt("Ingrese su nombre de jugador (entre 5 y 10 caracteres)");
     nombreSolicitado = nombreSolicitado.replace(/\s+/g, '');
     return nombreSolicitado
 }
@@ -48,7 +48,7 @@ function asignarAtaque(clase) {
     if ( clase == "g" ) {
         ataque = Math.round( 15 + 5 * ( sorteo - 0.4 ) );
     } else if ( clase == "b" ) {
-        ataque = Math.round( 23 + 7 * ( sorteo - 0.5 ) );
+        ataque = Math.round( 19 + 7 * ( sorteo - 0.5 ) );
     } else {
         ataque = Math.round( 13 + 10 * ( sorteo - 0.6 ) );
     }
@@ -61,9 +61,9 @@ function asignarHp(clase) {
     if ( clase == "g" ) {
         hp = Math.round( 100 + 20 * ( sorteo - 0.5 ) );
     } else if ( clase == "b" ) {
-        hp = Math.round( 150 + 15 * ( sorteo - 0.6 ) );
+        hp = Math.round( 120 + 15 * ( sorteo - 0.6 ) );
     } else {
-        hp = Math.round( 80 + 10 * ( sorteo - 0.25 ) );
+        hp = Math.round( 85 + 10 * ( sorteo - 0.25 ) );
     }
     return hp
 }
@@ -71,7 +71,7 @@ function asignarHp(clase) {
 // Función que asigna la precisión en función de la clase
 function asignarPrecision(clase) {
     if ( clase == "g" ) {
-        precision = 0.9;
+        precision = 0.95;
     } else if ( clase == "b" ) {
         precision = 0.75;
     } else {
@@ -87,7 +87,7 @@ function asignarEvasion(clase) {
     } else if ( clase == "b" ) {
         evasion = 0.01;
     } else {
-        evasion = 0.15;
+        evasion = 0.2;
     }
     return evasion
 }
@@ -103,6 +103,62 @@ function asignarVelocidad(clase) {
         velocidad = Math.round( 15 + 7 * ( sorteo - 0.25 ) );
     }
     return velocidad
+}
+
+// Función que controla si el ataque se dirige al objetivo
+function preciso(precision) {
+    sorteo = Math.random();
+    if ( precision >= sorteo ) {
+        return true
+    } else {
+        return false
+    }
+}
+
+// Función que controla si el objetivo evade el ataque
+function evadido(evasion) {
+    sorteo = Math.random();
+    if ( evasion >= sorteo ) {
+        return true
+    } else {
+        return false
+    }
+}
+
+// Función que designa el ataque del jugador
+function jugadorAtacar() {
+    controlPrecision = preciso(precisionJugador);
+    controlEvasion = evadido(evasionRival);
+    if ( controlPrecision && !controlEvasion ) {
+        hpRival = hpRival - ataqueJugador;
+        if ( hpRival <= 0 ) {
+            mensaje = "El Rival ha sido derrotado";
+            hpRival = 0;
+        } else {
+            mensaje = "Al Rival le queda " + hpRival + " de HP";
+        }
+    } else {
+        mensaje = "El ataque de " + nombreJugador + " ha fallado";
+    }
+    console.log(mensaje);
+}
+
+// Función que designa el ataque del rival
+function rivalAtacar() {
+    controlPrecision = preciso(precisionRival);
+    controlEvasion = evadido(evasionJugador);
+    if ( controlPrecision && !controlEvasion ) {
+        hpJugador = hpJugador - ataqueRival;
+        if ( hpJugador <= 0 ) {
+            mensaje = nombreJugador + " ha sido derrotado";
+            hpJugador = 0;
+        } else {
+            mensaje = "A " + nombreJugador + " le queda " + hpJugador + " de HP";
+        }
+    } else {
+        mensaje = "El ataque de Rival ha fallado";
+    }
+    console.log(mensaje);
 }
 
 /* Empiezo a crear variables y a utilizar las funciones */
@@ -139,10 +195,55 @@ let ataqueJugador = asignarAtaque(claseJugador);
 let hpJugador = asignarHp(claseJugador);
 let precisionJugador = asignarPrecision(claseJugador);
 let evasionJugador = asignarEvasion(claseJugador);
+let velocidadJugador = asignarVelocidad(claseJugador);
 
 // Cálculo de stats del rival
 
-let ataqueRival = asignarAtaque(claseJugador);
-let hpRival = asignarHp(claseJugador);
-let precisionRival = asignarPrecision(claseJugador);
-let evasionRival = asignarEvasion(claseJugador);
+let ataqueRival = asignarAtaque(claseRival);
+let hpRival = asignarHp(claseRival);
+let precisionRival = asignarPrecision(claseRival);
+let evasionRival = asignarEvasion(claseRival);
+let velocidadRival = asignarVelocidad(claseRival);
+
+// Presento Stats
+
+console.log("Los stats de " + nombreJugador + " son:");
+console.log("HP: " + hpJugador );
+console.log("Ataque: " + ataqueJugador );
+console.log("Precisión: " + precisionJugador );
+console.log("Evasión: " + evasionJugador );
+console.log("Velocidad: " + velocidadJugador );
+console.log("La clase de " + nombreJugador +  " es " + claseJugador );
+console.log("*************");
+console.log("Los stats del Rival son:");
+console.log("HP: " + hpRival );
+console.log("Ataque: " + ataqueRival );
+console.log("Precisión: " + precisionRival );
+console.log("Evasión: " + evasionRival );
+console.log("Velocidad: " + velocidadRival );
+console.log("La clase del rival es " + claseRival );
+console.log("*************");
+
+inicio = confirm("Los stats aparecen en la consola, deseas continuar?");
+
+if ( inicio ) {
+    if ( velocidadJugador >= velocidadRival ) {
+        while ( hpJugador > 0 && hpRival > 0 ) {
+            jugadorAtacar();
+            if ( hpRival == 0 ) {
+                break
+            }
+            rivalAtacar();
+        }
+    } else {
+        while ( hpJugador > 0 && hpRival > 0 ) {
+            rivalAtacar();
+            if ( hpJugador == 0 ) {
+                break
+            }
+            jugadorAtacar();
+        }
+    }
+}
+
+alert("Finalizado");
