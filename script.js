@@ -82,7 +82,6 @@ function asignarPrecision(clase) {
 
 // Función que asigna la evasión en función de la clase
 function asignarEvasion(clase) {
-    sorteo = Math.random();
     if ( clase == "g" ) {
         evasion = 0.05;
     } else if ( clase == "b" ) {
@@ -91,6 +90,19 @@ function asignarEvasion(clase) {
         evasion = 0.15;
     }
     return evasion
+}
+
+// Función que asignan la velocidad en función de la clase
+function asignarVelocidad(clase) {
+    sorteo = Math.random();
+    if ( clase == "g" ) {
+        velocidad = Math.round( 12 + 5 * ( sorteo - 0.3 ) );
+    } else if ( clase == "b" ) {
+        velocidad = Math.round( 10 + 3 * ( sorteo - 0.4 ) );
+    } else {
+        velocidad = Math.round( 15 + 7 * ( sorteo - 0.25 ) );
+    }
+    return velocidad
 }
 
 /* Empiezo a crear variables y a utilizar las funciones */
